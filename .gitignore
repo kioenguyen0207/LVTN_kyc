@@ -1,0 +1,4 @@
+.env
+__pycache__
+weights/vgg_face_weights.h5
+weights/best.pt
