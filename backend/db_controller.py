@@ -68,8 +68,8 @@ def readById(id):
     return response['Items']
 
 def readByUserId(id):
-    response = kyc_requests_table.query(
-        KeyConditionExpression=Key('user_id').eq(id)
+    response = kyc_requests_table.scan(
+        FilterExpression = Attr("user_id").eq(id)
     )
     return response['Items']
 
