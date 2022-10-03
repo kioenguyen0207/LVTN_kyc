@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 from s3_controller import s3_upload
-from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readById
+from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readById, readByUserId
 
 app = Flask(__name__)
 CORS(app)
@@ -78,6 +78,11 @@ class getById(Resource):
         id = request.args.get('id')
         return jsonify(readById(int(id))[0])
 
+class getByUserId(Resource):
+    def get(self):
+        id = request.args.get('id')
+        return jsonify(readByUserId(int(id))[0])
+
 #endpoint(s)
 api.add_resource(Home, "/")
 api.add_resource(send_kyc_request, "/kyc")
@@ -86,6 +91,7 @@ api.add_resource(getRejectedRequest, "/get/rejected")
 api.add_resource(getPendingRequest, "/get/pending")
 api.add_resource(getApprovedRequest, "/get/approved")
 api.add_resource(getById, "/get")
+api.add_resource(getByUserId, "/getuser")
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=5050)

@@ -67,6 +67,12 @@ def readById(id):
     )
     return response['Items']
 
+def readByUserId(id):
+    response = kyc_requests_table.query(
+        KeyConditionExpression=Key('user_id').eq(id)
+    )
+    return response['Items']
+
 if __name__ == '__main__':
     # for item in readAllReq():
     #     print('------')
