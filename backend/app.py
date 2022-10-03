@@ -59,29 +59,65 @@ class send_kyc_request(Resource):
 
 class getAllRequest(Resource):
     def get(self):
-        return jsonify(readAllReq())
+        try:
+            return jsonify(readAllReq())
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 class getRejectedRequest(Resource):
     def get(self):
-        return jsonify(readRejectedReq())
+        try:
+            return jsonify(readRejectedReq())
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 class getPendingRequest(Resource):
     def get(self):
-        return jsonify(readPendingReq())
+        try:
+            return jsonify(readPendingReq())
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 class getApprovedRequest(Resource):
     def get(self):
-        return jsonify(readApprovedReq())
+        try:
+            return jsonify(readApprovedReq())
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 class getById(Resource):
     def get(self):
-        id = request.args.get('id')
-        return jsonify(readById(int(id))[0])
+        try:
+            id = request.args.get('id')
+            return jsonify(readById(int(id))[0])
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 class getByUserId(Resource):
     def get(self):
-        id = request.args.get('id')
-        return jsonify(readByUserId(int(id))[0])
+        try:
+            id = request.args.get('id')
+            return jsonify(readByUserId(id)[0])
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
 
 #endpoint(s)
 api.add_resource(Home, "/")
