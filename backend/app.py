@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 from s3_controller import s3_upload
-from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readById, readByUserId
+from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readByUserId
 
 app = Flask(__name__)
 CORS(app)
