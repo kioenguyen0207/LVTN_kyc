@@ -17,12 +17,11 @@ resource = resource(
    region_name           = REGION_NAME
 )
 
-kyc_requests_table = resource.Table('kyc_requests')
+kyc_requests_table = resource.Table('kyc_requests1')
 
 def importData(user_id, username, address, phone, image_path, detected_objects, time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")):
     response = kyc_requests_table.put_item(
         Item = {
-            'request_id': random.randint(100000, 999999),
             'user_id': user_id,
             'username': username,
             'address' : address,
@@ -61,15 +60,9 @@ def readApprovedReq():
     )
     return response['Items']
 
-def readById(id):
-    response = kyc_requests_table.query(
-        KeyConditionExpression=Key('request_id').eq(id)
-    )
-    return response['Items']
-
 def readByUserId(id):
-    response = kyc_requests_table.scan(
-        FilterExpression = Attr("user_id").eq(id)
+    response = kyc_requests_table.query(
+        KeyConditionExpression=Key('user_id').eq(id)
     )
     return response['Items']
 
@@ -77,5 +70,4 @@ if __name__ == '__main__':
     # for item in readAllReq():
     #     print('------')
     #     print(item)
-
-    print(readById(69))
+    print('ggez luanvan de vl')

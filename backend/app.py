@@ -1,4 +1,3 @@
-import json
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import werkzeug
@@ -97,16 +96,16 @@ class getApprovedRequest(Resource):
                 'description': str(ex)
                 }, 500
 
-class getById(Resource):
-    def get(self):
-        try:
-            id = request.args.get('id')
-            return jsonify(readById(int(id))[0])
-        except Exception as ex:
-            return {
-                'msg': "Something's happened",
-                'description': str(ex)
-                }, 500
+# class getById(Resource):
+#     def get(self):
+#         try:
+#             id = request.args.get('id')
+#             return jsonify(readById(int(id))[0])
+#         except Exception as ex:
+#             return {
+#                 'msg': "Something's happened",
+#                 'description': str(ex)
+#                 }, 500
 
 class getByUserId(Resource):
     def get(self):
@@ -126,7 +125,6 @@ api.add_resource(getAllRequest, "/get/all")
 api.add_resource(getRejectedRequest, "/get/rejected")
 api.add_resource(getPendingRequest, "/get/pending")
 api.add_resource(getApprovedRequest, "/get/approved")
-api.add_resource(getById, "/get")
 api.add_resource(getByUserId, "/getuser")
 
 if __name__=='__main__':
