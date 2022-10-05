@@ -30,13 +30,14 @@ class Home(Resource):
 class send_kyc_request(Resource):
     def post(self):
         try:
-            parser = reqparse.RequestParser(bundle_errors=True)
+            parser = reqparse.RequestParser()
             parser.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files', required=True)
             parser.add_argument('user_id', location='form', required=True)
             parser.add_argument('username', location='form', required=True)
             parser.add_argument('address', location='form', required=True)
             parser.add_argument('phone', location='form', required=True)
             args = parser.parse_args()
+            print(args)
             uploaded_image = args['file'].read()
             img = cv2.imdecode(np.frombuffer(uploaded_image, np.uint8), cv2.IMREAD_COLOR)
             result = detect(img)
@@ -44,7 +45,14 @@ class send_kyc_request(Resource):
             for key in result:
                 p = result[key]
                 img = cv2.rectangle(img, (p[0], p[1]) , (p[2], p[3]), (255, 0, 0), 2)
-                detectedElements.append(key)
+                switch = {
+                    "real_face": "Face",
+                    "face_in_id": "ID Card face",
+                    "datetime": "Handwriting datetime",
+                    "correct_triip": "Handwriting 'Triip'",
+                    "id_in_selfie": "ID Card"
+                }
+                detectedElements.append(switch.get(key))
             s3_upload(img, args['user_id'] + '.png')
             importData(args['user_id'], args['username'], args['address'], args['phone'], ACCESS_POINT + args['user_id'] + '.png', detectedElements)
             return {
