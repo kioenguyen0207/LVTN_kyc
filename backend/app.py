@@ -1,4 +1,5 @@
 from distutils.log import debug
+from turtle import update
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import werkzeug
@@ -10,7 +11,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 from s3_controller import s3_upload
-from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readByUserId
+from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readByUserId, updateKycStatus
 
 app = Flask(__name__)
 CORS(app)
@@ -127,6 +128,19 @@ class getByUserId(Resource):
                 'description': str(ex)
                 }, 500
 
+class updateStatus(Resource):
+    def get(self):
+        try:
+            id = request.args.get('id')
+            status = request.args.get('status')
+            updateKycStatus(id, status)
+            return jsonify(readByUserId(id)[0])
+        except Exception as ex:
+            return {
+                'msg': "Something's happened",
+                'description': str(ex)
+                }, 500
+
 #endpoint(s)
 api.add_resource(Home, "/")
 api.add_resource(send_kyc_request, "/kyc")
@@ -135,6 +149,7 @@ api.add_resource(getRejectedRequest, "/get/rejected")
 api.add_resource(getPendingRequest, "/get/pending")
 api.add_resource(getApprovedRequest, "/get/approved")
 api.add_resource(getByUserId, "/getuser")
+api.add_resource(updateStatus, "/update/kycstatus")
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=443, debug=True)

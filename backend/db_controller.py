@@ -66,8 +66,23 @@ def readByUserId(id):
     )
     return response['Items']
 
+def updateKycStatus(id, status):
+    response = kyc_requests_table.update_item(
+        Key = {
+            'user_id': id
+        },
+        AttributeUpdates = {
+            'kycStatus': {
+                'Value'  : status,
+                'Action' : 'PUT'
+            }
+        },
+        ReturnValues = "UPDATED_NEW"
+    )
+    return response
+ 
 if __name__ == '__main__':
-    # for item in readAllReq():
-    #     print('------')
-    #     print(item)
+    for item in readAllReq():
+        print('------')
+        print(item)
     print('ggez luanvan de vl')
