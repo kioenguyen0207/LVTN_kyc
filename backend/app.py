@@ -1,5 +1,3 @@
-from distutils.log import debug
-from turtle import update
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import werkzeug
@@ -10,8 +8,11 @@ import os
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-from s3_controller import s3_upload
+from s3_controller import s3_upload, import_image_s3
 from db_controller import importData, readPendingReq, readAllReq, readRejectedReq, readApprovedReq, readByUserId, updateKycStatus
+from helper import get_most_similar_image
+import io
+import traceback
 
 app = Flask(__name__)
 CORS(app)
@@ -38,9 +39,8 @@ class send_kyc_request(Resource):
             parser.add_argument('address', location='form', required=True)
             parser.add_argument('phone', location='form', required=True)
             args = parser.parse_args()
-            print(args)
-            uploaded_image = args['file'].read()
-            img = cv2.imdecode(np.frombuffer(uploaded_image, np.uint8), cv2.IMREAD_COLOR)
+            uploaded_image = args['file']
+            img = cv2.imdecode(np.frombuffer(uploaded_image.read(), np.uint8), cv2.IMREAD_COLOR)
             result = detect(img)
             detectedElements = []
             for key in result:
@@ -54,13 +54,15 @@ class send_kyc_request(Resource):
                     "id_in_selfie": "ID Card"
                 }
                 detectedElements.append(switch.get(key))
+            similar_faces = get_most_similar_image(uploaded_image)
             s3_upload(img, args['user_id'] + '.png')
-            importData(args['user_id'], args['username'], args['address'], args['phone'], ACCESS_POINT + args['user_id'] + '.png', detectedElements)
+            importData(args['user_id'], args['username'], args['address'], args['phone'], ACCESS_POINT + args['user_id'] + '.png', detectedElements, similar_faces)
             return {
                 'Status': 'Success!'
             }
         except Exception as ex:
             print(ex)
+            print(traceback.format_exc())
             return {
                 'msg': "Something's happened",
                 'description': str(ex)
