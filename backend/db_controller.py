@@ -81,6 +81,10 @@ def updateKycStatus(id, status):
             'kycStatus': {
                 'Value'  : status,
                 'Action' : 'PUT'
+            },
+            'updatedAt': {
+                'Value'  : datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'Action' : 'PUT'
             }
         },
         ReturnValues = "UPDATED_NEW"

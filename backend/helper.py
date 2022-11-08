@@ -12,8 +12,11 @@ ssl._create_default_https_context = ssl._create_unverified_context
 load_dotenv()
 ACCESS_POINT = os.getenv('ACCESS_POINT')
 
-def get_n_most_similar_face(n, distance_list, key_list):
-  smallest_index = list(zip(*heapq.nsmallest(n, enumerate(distance_list), key=operator.itemgetter(1))))[0]
+def get_n_most_similar_face(distance_list, key_list):
+  try:
+    smallest_index = list(zip(*heapq.nsmallest(5, enumerate(distance_list), key=operator.itemgetter(1))))[0]
+  except:
+    smallest_index = []
   result = []
   for index in smallest_index:
     result.append(key_list[index])
@@ -33,7 +36,7 @@ def get_most_similar_image(image):
   loaded_img = face_recognition.load_image_file(image)
   encodedImg = face_recognition.face_encodings(loaded_img)[0]
   distance = face_recognition.face_distance(data_value, encodedImg)
-  result = get_n_most_similar_face(1, distance, data_key)
+  result = get_n_most_similar_face(distance, data_key)
   return result
 
 if __name__ == '__main__':
