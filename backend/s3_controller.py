@@ -13,7 +13,7 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 REGION_NAME = os.getenv('REGION_NAME')
 ACCESS_POINT = os.getenv('ACCESS_POINT')
 
-def s3_upload(image, imageName):
+def s3_upload(image, imageName, original=False):
   s3 = resource(
     's3',
     aws_access_key_id     = AWS_ACCESS_KEY_ID,
@@ -22,7 +22,10 @@ def s3_upload(image, imageName):
   )
   try:
     image_string = cv2.imencode('.png', image)[1].tostring()
-    result = s3.Bucket('triip').put_object(Key = imageName, Body=image_string)
+    if original == False:
+      result = s3.Bucket('triip').put_object(Key = imageName, Body=image_string)
+    else:
+      result = s3.Bucket('triiporiginal').put_object(Key = imageName, Body=image_string)
     print('upload success: \n', result)
   except Exception as ex:
     print('upload failed: \n', ex)

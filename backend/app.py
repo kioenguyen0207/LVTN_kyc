@@ -13,6 +13,7 @@ from db_controller import importData, readPendingReq, readAllReq, readRejectedRe
 from helper import get_most_similar_image
 import io
 import traceback
+from face_recognition import load_image_file, face_encodings
 
 app = Flask(__name__)
 CORS(app)
@@ -41,6 +42,7 @@ class send_kyc_request(Resource):
             args = parser.parse_args()
             uploaded_image = args['file']
             img = cv2.imdecode(np.frombuffer(uploaded_image.read(), np.uint8), cv2.IMREAD_COLOR)
+            s3_upload(img, args['user_id'] + '.png', True)
             result = detect(img)
             detectedElements = []
             for key in result:

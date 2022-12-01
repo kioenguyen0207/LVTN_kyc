@@ -14,6 +14,7 @@ AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 REGION_NAME = os.getenv('REGION_NAME')
 ACCESS_POINT = os.getenv('ACCESS_POINT')
+ACCESS_POINT_ORIGINAL = os.getenv('ACCESS_POINT_ORIGINAL')
 
 resource = resource(
    'dynamodb',
@@ -38,7 +39,7 @@ def importData(user_id, username, address, phone, image_path, detected_objects, 
             'comment': 'null',
             'approver': 'admin',
             'kycStatus': 'pending',
-            'similar_faces': similar_faces
+            'similar_faces': similar_faces,
         }
     )
     print(response)
@@ -90,7 +91,7 @@ def updateKycStatus(id, status):
         ReturnValues = "UPDATED_NEW"
     )
     if status == 'approved':
-        response2 = requests.get(ACCESS_POINT + id + '.png')
+        response2 = requests.get(ACCESS_POINT_ORIGINAL + id + '.png')
         import_image_s3(ACCESS_POINT + id + '.png', cv2.imdecode(np.frombuffer(response2.content, np.uint8), cv2.IMREAD_COLOR))
     return response
  
